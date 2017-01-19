@@ -10,13 +10,13 @@ namespace BlackJack
     {
         public string suit { set; get; }
         public int value { set; get; }
-        public int card_number { set; get; }
+        public int cardNumber { set; get; }
 
         public Card()
         {
             value = -1;
             suit = "";
-            card_number = -1;
+            cardNumber = -1;
         }
     }
 }

@@ -10,69 +10,63 @@ namespace BlackJack
     public class Hand
     {
         public List<Card> cards { set; get; }
-        public int number_of_cards { set; get; }
+        public int cardsInHand { set; get; }
         public int score { set; get; }
         public string result { set; get; }
 
-        public Hand(int numcards) //constructor creates list and places empty cards in it
+        public Hand(int numCards) //constructor creates list and places empty cards in it
         {
-            number_of_cards = numcards; //number of cards in a hand
+            cardsInHand = numCards; //number of cards in a hand
 
             cards = new List<Card>(); // list to hold cards
-            Card emptycard = new Card(); // blank card
+            Card emptyCard = new Card(); // blank card
 
-            for (int i = 0; i < numcards; i++)
+            for (int i = 0; i < numCards; i++)
             {
-                cards.Add(emptycard); // adding blank cards to list
+                cards.Add(emptyCard); // adding blank cards to list
             }
-
         }
 
-        public void add_card(Deck currentdeck, int number_cards_in_a_hand) // picks random card from deck and puts it in one of the blank card spots created 
+        public void AddCard(Deck currentDeck, int number_cards_in_a_hand) // picks random card from deck and puts it in one of the blank card spots created 
         {
             bool added = false;
-            int pickedcard = 0;
+            int pickedCard = 0;
 
-            if (currentdeck.cards.Count <= 2)
+            if (currentDeck.cards.Count <= 2)
             {
-                currentdeck.loaddeck();
-                //clear_hand();
+                currentDeck.loadDeck();
             }
-            pickedcard = RandomNumber.NumberBetween(2, currentdeck.cards.Count - 1);
-            Card currentcard = currentdeck.cards.ElementAt(pickedcard);
-            Card tobereplaced = new Card();
+            pickedCard = RandomNumber.NumberBetween(2, currentDeck.cards.Count - 1);
+            Card currentCard = currentDeck.cards.ElementAt(pickedCard);
+            Card toBeReplaced = new Card();
 
             while (!added)
             {
                 foreach (Card temp in cards)
                 {
                     if (temp.suit == "") //place to put new card in
-                        tobereplaced = temp;
+                        toBeReplaced = temp;
                 }
-                if (tobereplaced != null)
+                if (toBeReplaced != null)
                 {
-                    cards.Remove(tobereplaced);
-                    cards.Add(currentcard);
+                    cards.Remove(toBeReplaced);
+                    cards.Add(currentCard);
                     added = true;
-                    currentdeck.cards.Remove(currentcard);
+                    currentDeck.cards.Remove(currentCard);
                 }
-
             }
-
         }
-        // ***********************************************************************************************
 
-        public void deal_cards(Deck currentdeck, int numcards)
+        public void DealCards(Deck currentDeck, int numCards)
         {
-            numcards = cards.Count;
-            for (int i = 0; i < numcards; i++)
+            numCards = cards.Count;
+            for (int i = 0; i < numCards; i++)
             {
-                add_card(currentdeck, numcards);
+                AddCard(currentDeck, numCards);
             }
         }
-
-        // ***********************************************************************************************
-        public void evaluate_hand()
+         
+        public void EvaluateHand()
         {
             score = 0;
 
@@ -99,6 +93,5 @@ namespace BlackJack
                 result = "You have " + score;
             }
         }
-
     }
 }

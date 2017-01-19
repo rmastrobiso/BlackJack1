@@ -19,45 +19,44 @@ namespace BlackJack
         public Deck()
         {
             cards = new List<Card>();
-            loaddeck();
-
+            loadDeck();
         }
 
-        public void loaddeck()
+        public void loadDeck()
         {
             cards.Clear();
-            int cardnum = 1;
+            int cardNum = 1;
             for (int i = 1; i < 5; i++) // 4 suits
             {
                 for (int j = 1; j < 14; j++) // 13 cards each (total 52 cards)
                 {
-                    Card currentcard = new Card(); //create a new card
+                    Card currentCard = new Card(); //create a new card
 
                     //assign suit
-                    currentcard.card_number = cardnum;
+                    currentCard.cardNumber = cardNum;
                     if (i == 1)
-                        currentcard.suit = "spades";
+                        currentCard.suit = "spades";
                     if (i == 2)
-                        currentcard.suit = "clubs";
+                        currentCard.suit = "clubs";
                     if (i == 3)
-                        currentcard.suit = "hearts";
+                        currentCard.suit = "hearts";
                     if (i == 4)
-                        currentcard.suit = "diamonds";
+                        currentCard.suit = "diamonds";
                     // assign value
-                    currentcard.value = j;
+                    currentCard.value = j;
                     // put in deck 
-                    cards.Add(currentcard); // adding card to deck
+                    cards.Add(currentCard); // adding card to deck
                                             //next card
-                    cardnum++;
+                    cardNum++;
                 }
             }
         }
 
-        public Card FindCard(int cardnum)
+        public Card FindCard(int cardNum)
         {
             foreach (Card a_card in cards)
             {
-                if (a_card.card_number == cardnum)
+                if (a_card.cardNumber == cardNum)
                 {
                     return a_card;
                 }

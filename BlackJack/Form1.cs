@@ -12,10 +12,11 @@ namespace BlackJack
 {
     public partial class Form1 : Form
     {
-        public Deck currentdeck { get; set; }
-        public Hand player_hand { get; set; }
-        public Hand dealer_hand { get; set; }
-        public int numcards { get; set; }
+        public Deck currentDeck { get; set; }
+        public Hand playerHand { get; set; }
+        public Hand dealerHand { get; set; }
+        public int numCards { get; set; }
+        public bool newGame = true;
 
         public Form1()
         {
@@ -46,16 +47,34 @@ namespace BlackJack
         #region Events
         private void btnDeal_Click(object sender, EventArgs e)
         {
-            numcards = 2;
-            currentdeck = new Deck();
-            player_hand = new Hand(numcards);
-            dealer_hand = new Hand(2);
+            if (newGame)
+            {
+                pictureBox1.Visible = false;
+                pictureBox2.Visible = false;
+                pictureBox3.Visible = false;
+                pictureBox4.Visible = false;
+                pictureBox5.Visible = false;
+                pictureBox6.Visible = false;
+                pictureBox7.Visible = false;
+                pictureBox8.Visible = false;
+                pictureBox9.Visible = false;
+                pictureBox10.Visible = false;
+                pictureBox11.Visible = false;
+                pictureBox12.Visible = false;
 
-            player_hand.deal_cards(currentdeck, numcards);
-            display_hand(player_hand);
-            player_hand.evaluate_hand();
+                newGame = false;
+            }
 
-            richTextBox1.Text = player_hand.result + Environment.NewLine;
+            numCards = 2;
+            currentDeck = new Deck();
+            playerHand = new Hand(numCards);
+            dealerHand = new Hand(2);
+
+            playerHand.DealCards(currentDeck, numCards);
+            DisplayHand(playerHand);
+            playerHand.EvaluateHand();
+
+            richTextBox1.Text = playerHand.result + Environment.NewLine;
             btnDeal.Visible = false;
             btnHit.Visible = true;
             btnStick.Visible = true;
@@ -63,57 +82,46 @@ namespace BlackJack
 
         private void btnHit_Click(object sender, EventArgs e)
         {
-            player_hand.add_card(currentdeck, 1);
-            display_hand(player_hand);
-            player_hand.evaluate_hand();
+            playerHand.AddCard(currentDeck, 1);
+            DisplayHand(playerHand);
+            playerHand.EvaluateHand();
 
-            richTextBox1.Text = player_hand.result + Environment.NewLine;
+            richTextBox1.Text = playerHand.result + Environment.NewLine;
             btnDeal.Visible = false;
             btnHit.Visible = true;
             btnStick.Visible = true;
 
-            if (player_hand.score >= 21)
+            if (playerHand.score >= 21)
             {
-                end_game(player_hand, dealer_hand);
+                EndGame(playerHand, dealerHand);
             }
         }
 
         private void btnStick_Click(object sender, EventArgs e)
         {
-            end_game(player_hand, dealer_hand);
+            EndGame(playerHand, dealerHand);
         }
         #endregion
 
         #region Methods
-        public void display_hand(Hand playerhand)
+        public void DisplayHand(Hand playerHand)
         {
             int count = 0;
             string currentcard_picture = "";
             DateTime t = DateTime.Now;
 
-            if (playerhand.cards != null && playerhand != null)
-                foreach (Card currentcard in playerhand.cards)
+            if (playerHand.cards != null && playerHand != null)
+                foreach (Card currentcard in playerHand.cards)
                 {
                     if (currentcard != null && currentcard.suit != "")
-                    {
-                        if (currentcard.value < 10)
-                            currentcard_picture = "_" + currentcard.value.ToString() + "_" + currentcard.suit;
-                        if (currentcard.value == 10)
-                            currentcard_picture = "_" + currentcard.value.ToString() + "_" + currentcard.suit;
-                        if (currentcard.value == 11)
-                            currentcard_picture = "J" + "_" + currentcard.suit;
-                        if (currentcard.value == 12)
-                            currentcard_picture = "Q" + "_" + currentcard.suit;
-                        if (currentcard.value >= 13)
-                            currentcard_picture = "K" + "_" + currentcard.suit;
-                    }
+                        currentcard_picture = "_" + currentcard.value.ToString() + "_" + currentcard.suit;
                     else
                         currentcard_picture = "space";
 
                     if (count == 0)
                     {
 
-                        pictureBox1.Visible = true; //showing first card
+                        pictureBox1.Visible = true; 
                         System.Resources.ResourceManager rm = BlackJack.Properties.Resources.ResourceManager;
                         Bitmap myImage = (Bitmap)rm.GetObject(currentcard_picture);
                         pictureBox1.Image = myImage;
@@ -224,37 +232,38 @@ namespace BlackJack
                 }
         }
 
-        private void end_game(Hand player_hand, Hand dealer_hand)
+        private void EndGame(Hand playerHand, Hand dealerHand)
         {
-            dealer_hand.deal_cards(currentdeck, numcards); //deal cards to dealer
-            dealer_hand.evaluate_hand();
-            while (dealer_hand.score < 15) //dealer sticks on 15 or higher
+            dealerHand.DealCards(currentDeck, numCards); //deal cards to dealer
+            dealerHand.EvaluateHand();
+
+            while (dealerHand.score < 15) //dealer sticks on 15 or higher
             {
-                dealer_hand.add_card(currentdeck, 1);
-                dealer_hand.evaluate_hand();
+                dealerHand.AddCard(currentDeck, 1);
+                dealerHand.EvaluateHand();
             }
-            if (player_hand.score > 21)
-            {
+
+            if (playerHand.score > 21)
                 richTextBox1.Text = "You bust better luck next time." + Environment.NewLine;
-            }
-            if (dealer_hand.score > 21)
+
+            if (dealerHand.score > 21)
             {
-                richTextBox1.Text = "Dealer has " + dealer_hand.score + ", congratulations you win ." + Environment.NewLine;
+                richTextBox1.Text = "Dealer has " + dealerHand.score + ", congratulations you win ." + Environment.NewLine;
             }
             else
             {
-                if ((player_hand.score >= dealer_hand.score) && (player_hand.score <= 21))
-                {
-                    richTextBox1.Text += "Dealer has " + dealer_hand.score + ", congratulations you win ." + Environment.NewLine;
-                }
-                if (player_hand.score == 21)
-                {
+                if ((dealerHand.score >= dealerHand.score) && (dealerHand.score <= 21))
+                                    richTextBox1.Text += "Dealer has " + dealerHand.score + ", congratulations you win ." + Environment.NewLine;
+
+                if (playerHand.score == 21)
                     richTextBox1.Text = "Congratulations BLACKJACK, you win ." + Environment.NewLine;
-                }
             }
+
             btnDeal.Visible = true; 
             btnHit.Visible = false;
             btnStick.Visible = false;
+
+            newGame = true;
         }
         #endregion
     }
